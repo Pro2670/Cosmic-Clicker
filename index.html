@@ -5,112 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cosmic Clickers</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0b0c2a, #2e003e);
-    color: white;
-    overflow-x: hidden;
-  }
-  #game-container {
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
-  }
-  #click-area {
-    flex: 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  #click-button {
-    font-size: 4rem;
-    padding: 2rem 3rem;
-    border-radius: 20px;
-    border: none;
-    background: #ffcc00;
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
-  #shop {
-    flex: 1;
-    background: rgba(0,0,0,0.3);
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .shop-item {
-    margin: 1rem 0;
-    padding: 1rem;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  .shop-item:hover {
-    background: rgba(255,255,255,0.2);
-  }
-  #settings {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: rgba(0,0,0,0.5);
-    padding: 0.5rem;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  #settings-panel {
-    position: fixed;
-    top: 50px;
-    left: 10px;
-    background: rgba(0,0,0,0.8);
-    padding: 1rem;
-    border-radius: 10px;
-    display: none;
-    max-width: 300px;
-  }
-  .toggle {
-    display: flex;
-    align-items: center;
-    margin: 0.5rem 0;
-  }
-  .toggle input[type="checkbox"] {
-    margin-left: auto;
-    width: 40px;
-    height: 20px;
-    -webkit-appearance: none;
-    background: #ccc;
-    outline: none;
-    border-radius: 20px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .toggle input[type="checkbox"]:checked {
-    background: #0f0;
-  }
-  .toggle input[type="checkbox"]::before {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    top: 1px;
-    left: 1px;
-    background: #fff;
-    transition: 0.2s;
-  }
-  .toggle input[type="checkbox"]:checked::before {
-    left: 21px;
-  }
+  /* === GENERAL STYLES === */
+  body, html {margin:0;padding:0;height:100%;font-family:Arial, sans-serif;background:linear-gradient(135deg,#0b0c2a,#2e003e);color:white;}
+  #game-container {display:flex;height:100vh;overflow:hidden;}
+  #click-area {flex:3;display:flex;justify-content:center;align-items:center;position:relative;}
+  #click-button {font-size:4rem;padding:2rem 3rem;border-radius:20px;border:none;background:#ffcc00;color:#000;cursor:pointer;transition:transform 0.1s;}
+  #shop {flex:1;background:rgba(0,0,0,0.3);padding:1rem;display:flex;flex-direction:column;overflow-y:auto;}
+  .shop-item {margin:1rem 0;padding:1rem;background:rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;}
+  .shop-item:hover {background:rgba(255,255,255,0.2);}
+  #settings {position:fixed;top:10px;left:10px;background:rgba(0,0,0,0.5);padding:0.5rem;border-radius:10px;cursor:pointer;z-index:100;}
+  #settings-panel {position:fixed;top:50px;left:10px;background:rgba(0,0,0,0.85);padding:1rem;border-radius:10px;display:none;max-width:300px;z-index:100;}
+  .toggle {display:flex;align-items:center;margin:0.5rem 0;}
+  .toggle input[type="checkbox"] {margin-left:auto;width:40px;height:20px;-webkit-appearance:none;background:#ccc;outline:none;border-radius:20px;position:relative;cursor:pointer;transition:background 0.2s;}
+  .toggle input[type="checkbox"]:checked {background:#0f0;}
+  .toggle input[type="checkbox"]::before {content:'';position:absolute;width:18px;height:18px;border-radius:50%;top:1px;left:1px;background:#fff;transition:0.2s;}
+  .toggle input[type="checkbox"]:checked::before {left:21px;}
+  #login-overlay {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:200;}
+  #login-overlay input {margin:0.5rem 0;padding:0.5rem;font-size:1rem;width:200px;border-radius:5px;border:none;}
+  #login-overlay button {margin:0.5rem;padding:0.5rem 1rem;font-size:1rem;border-radius:5px;border:none;cursor:pointer;background:#ffcc00;color:#000;}
+  #admin-panel {position:fixed;top:10px;right:10px;background:rgba(255,255,255,0.1);padding:1rem;border-radius:10px;display:none;flex-direction:column;z-index:100;}
+  #admin-panel input, #admin-panel select {margin:0.3rem 0;padding:0.3rem;border-radius:5px;border:none;}
+  #coins-display,#shards-display,#rebirth-display {margin-top:1rem;font-weight:bold;}
 </style>
 </head>
 <body>
 
+<!-- === SETTINGS PANEL === -->
 <div id="settings">⚙️</div>
 <div id="settings-panel">
   <div class="toggle">Music <input type="checkbox" id="music-toggle"></div>
-  <div class="toggle">Sound Effects <input type="checkbox" id="sfx-toggle" checked></div>
+  <div class="toggle">SFX <input type="checkbox" id="sfx-toggle" checked></div>
   <div class="toggle">Offline Earnings <input type="checkbox" id="offline-toggle" checked></div>
   <div>
     <h3>Themes</h3>
@@ -118,6 +42,30 @@
   </div>
 </div>
 
+<!-- === ADMIN PANEL (only Pro2670) === -->
+<div id="admin-panel">
+  <h3>Admin Panel</h3>
+  <input type="text" id="admin-username" placeholder="Target Username">
+  <input type="number" id="admin-amount" placeholder="Amount">
+  <select id="admin-type">
+    <option value="coins">Coins</option>
+    <option value="shards">Shards</option>
+    <option value="rebirths">Rebirths</option>
+  </select>
+  <button id="admin-submit">Give</button>
+</div>
+
+<!-- === LOGIN/REGISTER OVERLAY === -->
+<div id="login-overlay">
+  <h2>Cosmic Clickers Login/Register</h2>
+  <input type="text" id="login-username" placeholder="Username">
+  <input type="password" id="login-password" placeholder="Password">
+  <button id="login-btn">Login</button>
+  <button id="register-btn">Register</button>
+  <div id="login-error" style="color:red;margin-top:0.5rem;"></div>
+</div>
+
+<!-- === GAME UI === -->
 <div id="game-container">
   <div id="click-area">
     <button id="click-button">✨</button>
@@ -129,10 +77,12 @@
     <div class="shop-item" id="fast-auto-btn">Buy Fast Auto Clicker</div>
     <div class="shop-item" id="rebirth-btn">Rebirth (Next: 2x)</div>
     <div id="coins-display">Coins: 0</div>
+    <div id="shards-display">Shards: 0</div>
+    <div id="rebirth-display">Rebirths: 0</div>
   </div>
 </div>
 
-<!-- Firebase -->
+<!-- === FIREBASE === -->
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
@@ -152,117 +102,131 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ==== UTILITY ====
-function usernameToEmail(username) { return `${username.toLowerCase()}@cosmic.local`; }
+// ==== UTILITIES ====
+function usernameToEmail(u){ return `${u.toLowerCase()}@cosmic.local`; }
 
 // ==== GAME STATE ====
-let gameState = {
-  coins: 0,
-  perClick: 1,
-  upgrades: 0,
-  autos: {normal:0,fast:0},
-  rebirths: 0,
-  shards: 0,
-  prestigeBoost: 1,
-  settings: {music:false,sfx:true,offline:true},
-  theme: 'default'
-};
 let username = "";
+let gameState = {
+  coins:0,shards:0,rebirths:0,perClick:1,upgrades:0,
+  autos:{normal:0,fast:0},prestigeBoost:1,settings:{music:false,sfx:true,offline:true},theme:'default'
+};
 
-// ==== SETTINGS TOGGLE ====
-document.getElementById("settings").onclick = () => {
-  const panel = document.getElementById("settings-panel");
-  panel.style.display = panel.style.display==="none"?"block":"none";
+// ==== LOGIN / REGISTER ====
+const loginOverlay = document.getElementById("login-overlay");
+const loginError = document.getElementById("login-error");
+document.getElementById("login-btn").onclick = async ()=>{
+  const u = document.getElementById("login-username").value.trim();
+  const p = document.getElementById("login-password").value;
+  if(!u||!p){loginError.innerText="Fill all fields"; return;}
+  try{
+    const email = usernameToEmail(u);
+    await auth.signInWithEmailAndPassword(email,p);
+    username = u;
+    const doc = await db.collection("users").doc(username.toLowerCase()).get();
+    if(doc.exists) gameState = doc.data().gameState;
+    loginOverlay.style.display="none";
+    updateDisplay();
+    checkAdmin();
+  }catch(e){loginError.innerText=e.message;}
+};
+document.getElementById("register-btn").onclick = async ()=>{
+  const u = document.getElementById("login-username").value.trim();
+  const p = document.getElementById("login-password").value;
+  if(!u||!p){loginError.innerText="Fill all fields"; return;}
+  const doc = await db.collection("users").doc(u.toLowerCase()).get();
+  if(doc.exists){loginError.innerText="Username taken"; return;}
+  const email = usernameToEmail(u);
+  try{
+    await auth.createUserWithEmailAndPassword(email,p);
+    username = u;
+    await db.collection("users").doc(username.toLowerCase()).set({gameState:gameState});
+    loginOverlay.style.display="none";
+    updateDisplay();
+    checkAdmin();
+  }catch(e){loginError.innerText=e.message;}
+};
+
+// ==== ADMIN PANEL ====
+const adminPanel = document.getElementById("admin-panel");
+function checkAdmin(){
+  if(username==="Pro2670"){adminPanel.style.display="flex";}
 }
+document.getElementById("admin-submit").onclick = async ()=>{
+  const target = document.getElementById("admin-username").value.trim().toLowerCase();
+  const amt = parseInt(document.getElementById("admin-amount").value);
+  const type = document.getElementById("admin-type").value;
+  if(!target||isNaN(amt)||amt<=0){alert("Invalid input");return;}
+  const docRef = db.collection("users").doc(target);
+  const doc = await docRef.get();
+  if(!doc.exists){alert("User not found");return;}
+  let gs = doc.data().gameState;
+  if(type==="coins") gs.coins += amt;
+  else if(type==="shards") gs.shards += amt;
+  else if(type==="rebirths"){ gs.rebirths += amt; gs.prestigeBoost = 2**gs.rebirths; }
+  await docRef.set({gameState:gs},{merge:true});
+  alert(`Gave ${amt} ${type} to ${target}`);
+};
 
-// ==== CLICK ANIMATION + LOGIC ====
+// ==== CLICK BUTTON ====
 const clickBtn = document.getElementById("click-button");
-clickBtn.onclick = () => {
-  clickBtn.style.transform = "scale(1.2)";
+clickBtn.onclick = ()=>{
+  clickBtn.style.transform="scale(1.2)";
   setTimeout(()=>clickBtn.style.transform="scale(1)",100);
   gameState.coins += gameState.perClick*gameState.prestigeBoost;
   updateDisplay();
-}
+};
 
 // ==== SHOP LOGIC ====
 const upgradeBtn = document.getElementById("upgrade-btn");
-upgradeBtn.onclick = () => {
-  gameState.upgrades += 1;
-  gameState.perClick *= 2;
-  upgradeBtn.innerText = `Upgrade Click (Next: ${gameState.perClick*2})`;
+upgradeBtn.onclick = ()=>{
+  gameState.upgrades++; gameState.perClick*=2;
+  upgradeBtn.innerText=`Upgrade Click (Next: ${gameState.perClick*2})`;
   updateDisplay();
-}
+};
 
 const autoBtn = document.getElementById("auto-btn");
-autoBtn.onclick = () => {
-  if(gameState.autos.normal===0){
-    gameState.autos.normal = 1;
-    autoBtn.style.opacity = 0.5;
-    autoBtn.style.pointerEvents = "none";
-    startAutoClicks(1000);
-  }
-}
+autoBtn.onclick = ()=>{
+  if(gameState.autos.normal===0){gameState.autos.normal=1; autoBtn.style.opacity=0.5; autoBtn.style.pointerEvents="none"; startAutoClicks(1000);}
+};
 
 const fastAutoBtn = document.getElementById("fast-auto-btn");
-fastAutoBtn.onclick = () => {
-  if(gameState.autos.fast===0){
-    gameState.autos.fast = 1;
-    fastAutoBtn.style.opacity = 0.5;
-    fastAutoBtn.style.pointerEvents = "none";
-    startAutoClicks(300);
-  }
-}
+fastAutoBtn.onclick = ()=>{
+  if(gameState.autos.fast===0){gameState.autos.fast=1; fastAutoBtn.style.opacity=0.5; fastAutoBtn.style.pointerEvents="none"; startAutoClicks(300);}
+};
 
 const rebirthBtn = document.getElementById("rebirth-btn");
-rebirthBtn.onclick = () => {
-  gameState.rebirths += 1;
-  gameState.prestigeBoost = 2 ** gameState.rebirths;
-  gameState.coins = 0;
-  gameState.perClick = 2;
+rebirthBtn.onclick = ()=>{
+  gameState.rebirths++; gameState.prestigeBoost = 2**gameState.rebirths;
+  gameState.coins=0; gameState.perClick=2;
+  rebirthBtn.innerText=`Rebirth (Next: ${gameState.prestigeBoost*2}x)`;
   updateDisplay();
-  rebirthBtn.innerText = `Rebirth (Next: ${gameState.prestigeBoost*2}x)`;
-}
+};
 
-// ==== AUTO CLICKERS ====
-function startAutoClicks(interval){
-  setInterval(()=>{gameState.coins += gameState.perClick; updateDisplay();}, interval);
-}
+// ==== AUTO CLICKS ====
+function startAutoClicks(interval){ setInterval(()=>{gameState.coins+=gameState.perClick;updateDisplay();},interval); }
+
+// ==== SETTINGS TOGGLE ====
+document.getElementById("settings").onclick = ()=>{
+  const panel = document.getElementById("settings-panel");
+  panel.style.display=panel.style.display==="none"?"block":"none";
+};
 
 // ==== DISPLAY ====
 function updateDisplay(){
-  document.getElementById("coins-display").innerText = `Coins: ${gameState.coins}`;
+  document.getElementById("coins-display").innerText=`Coins: ${gameState.coins}`;
+  document.getElementById("shards-display").innerText=`Shards: ${gameState.shards}`;
+  document.getElementById("rebirth-display").innerText=`Rebirths: ${gameState.rebirths}`;
 }
 
 // ==== CLOUD SAVE ====
 async function saveGame(){
-  if(username==="") return;
-  await db.collection("users").doc(username.toLowerCase()).set({gameState: gameState},{merge:true});
+  if(!username) return;
+  await db.collection("users").doc(username.toLowerCase()).set({gameState:gameState},{merge:true});
 }
 setInterval(saveGame,10000);
-
-// ==== LOGIN / REGISTER ====
-async function loginUser(u,p){
-  const email = usernameToEmail(u);
-  const cred = await auth.signInWithEmailAndPassword(email,p);
-  username = u;
-  const doc = await db.collection("users").doc(username.toLowerCase()).get();
-  if(doc.exists) gameState = doc.data().gameState;
-  updateDisplay();
-}
-
-async function registerUser(u,p){
-  const docRef = db.collection("users").doc(u.toLowerCase());
-  const doc = await docRef.get();
-  if(doc.exists){ alert("Username taken"); return; }
-  const email = usernameToEmail(u);
-  const cred = await auth.createUserWithEmailAndPassword(email,p);
-  username = u;
-  await docRef.set({gameState:gameState});
-  updateDisplay();
-}
-
-// ==== INIT ====
 updateDisplay();
 </script>
+
 </body>
 </html>
