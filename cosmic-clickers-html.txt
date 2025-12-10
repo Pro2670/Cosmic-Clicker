@@ -1,0 +1,88 @@
+<!-- ✅ FIREBASE CLOUD LOGIN + SAVE (COMPAT CDN FOR GITHUB PAGES) -->
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ✅ Your Firebase configuration (already wired)
+const firebaseConfig = {
+  apiKey: "AIzaSyBVV8RBo2vTXjQqwEpw1z4BtkF2e-k1aBM",
+  authDomain: "cosmic-clickers.firebaseapp.com",
+  projectId: "cosmic-clickers",
+  storageBucket: "cosmic-clickers.firebasestorage.app",
+  messagingSenderId: "24680236974",
+  appId: "1:24680236974:web:65afbb538c971ed0362a3f",
+  measurementId: "G-28BR1L29XH"
+};
+
+// ✅ Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ✅ Username → Email mapping
+function usernameToEmail(username) {
+  return `${username.toLowerCase()}@cosmic.local`;
+}
+
+// ✅ REGISTER
+async function registerWithUsername(username, password) {
+  username = username.trim().toLowerCase();
+  if (!username || !password) throw new Error('Username & password required');
+
+  const userDoc = db.collection("users").doc(username);
+  const snap = await userDoc.get();
+  if (snap.exists) throw new Error('Username taken');
+
+  const email = usernameToEmail(username);
+  const cred = await auth.createUserWithEmailAndPassword(email, password);
+
+  const startingState = getDefaultGameState();
+
+  await userDoc.set({
+    uid: cred.user.uid,
+    username,
+    gameState: startingState,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  return startingState;
+}
+
+// ✅ LOGIN
+async function loginWithUsername(username, password) {
+  username = username.trim().toLowerCase();
+  const email = usernameToEmail(username);
+
+  const cred = await auth.signInWithEmailAndPassword(email, password);
+  const userDoc = await db.collection("users").doc(username).get();
+
+  if (!userDoc.exists) throw new Error("No cloud data found");
+
+  return userDoc.data().gameState;
+}
+
+// ✅ CLOUD SAVE
+async function saveGameStateToCloud(username, state) {
+  if (!auth.currentUser) return;
+
+  await db.collection("users").doc(username.toLowerCase()).set({
+    uid: auth.currentUser.uid,
+    username: username.toLowerCase(),
+    gameState: state,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+// ✅ REALTIME SYNC
+function startRealtimeSync(username, onUpdate) {
+  return db.collection("users").doc(username.toLowerCase())
+    .onSnapshot(doc => {
+      if (doc.exists && doc.data().gameState) {
+        onUpdate(doc.data().gameState);
+      }
+    });
+}
+</script>
+
+<!-- ✅ Your existing Cosmic Clickers game script continues below -->
